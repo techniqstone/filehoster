@@ -5,7 +5,7 @@ Make your file accessible to everyone with just one link
 
 ### Quickstart install
 ```bash
-git clone https://github.com/WrobelXXL/filehoster.git && cd filehoster && chmod +x setup.sh && ./setup.sh
+git clone https://github.com/techniqstone/filehoster.git && cd filehoster && chmod +x setup.sh && ./setup.sh
 ```
 
 ### filehoster Docker stoppen
@@ -35,4 +35,4 @@ docker compose up -d --build
     CustomLog ${APACHE_LOG_DIR}/file_access.log combined
 </VirtualHost>
 ```
-> Apache conf aktivieren `sudo a2ensite file.conf`
+> Enable Apache conf `sudo a2ensite file.conf`
