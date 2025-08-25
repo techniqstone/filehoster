@@ -1,0 +1,16 @@
+services:
+  filehoster:
+    build: .
+    container_name: filehoster
+    restart: unless-stopped
+    ports:
+      - "8110:8110"
+    environment:
+      - BASE_URL=${BASE_URL}
+      - MAX_UPLOAD_MB=${MAX_UPLOAD_MB}
+      - DB_PATH=${DB_PATH}
+      - STORAGE_DIR=${STORAGE_DIR}
+    volumes:
+      - ./file:/file
+      - ./data:/app/data
+      - ./app:/app/app:ro
