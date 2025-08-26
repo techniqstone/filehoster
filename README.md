@@ -36,3 +36,4 @@ docker compose up -d --build
 </VirtualHost>
 ```
 > Enable Apache conf `sudo a2ensite file.conf`
+> Reload Conf `sudo systemctl reload apache2`
