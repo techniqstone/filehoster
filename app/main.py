@@ -30,7 +30,6 @@ EXPIRY_CHOICES = {
 
 @app.on_event("startup")
 async def _startup():
-    # kleiner Hintergrund-Cleaner (stündlich)
     async def cleaner():
         while True:
             purge_expired(now_iso())
@@ -49,12 +48,11 @@ async def upload(file: UploadFile = File(...), expiry: str = Form("forever")):
     fid = unique_id()
     dest_path = os.path.join(STORAGE_DIR, fid)
 
-    # Stream-Speicher (RAM-schonend) + Größenlimit
     size = 0
     try:
         with open(dest_path, "wb") as out:
             while True:
-                chunk = await file.read(1024 * 1024)  # 1 MiB
+                chunk = await file.read(1024 * 1024)
                 if not chunk:
                     break
                 size += len(chunk)
@@ -62,7 +60,6 @@ async def upload(file: UploadFile = File(...), expiry: str = Form("forever")):
                     raise HTTPException(status_code=413, detail="Datei zu groß")
                 out.write(chunk)
     except Exception:
-        # Aufräumen bei Abbruch/Fall
         if os.path.exists(dest_path):
             try: os.remove(dest_path)
             except: pass
@@ -91,15 +88,12 @@ async def serve_file(fid: str):
     if not rec:
         raise HTTPException(status_code=404, detail="Datei nicht gefunden")
 
-    # Ablauf prüfen
     if rec["expires_at"]:
         try:
             if datetime.fromisoformat(rec["expires_at"]) <= datetime.now(timezone.utc):
-                # Abgelaufen -> aufräumen & 410
                 purge_expired(now_iso())
                 raise HTTPException(status_code=410, detail="Link abgelaufen")
         except ValueError:
-            # falls altes Format – ignorieren
             pass
 
     path = os.path.join(STORAGE_DIR, fid)
@@ -108,8 +102,6 @@ async def serve_file(fid: str):
 
     headers = {"Content-Disposition": f'inline; filename="{rec["orig_name"]}"'}
     return FileResponse(path, media_type=rec["mime"], headers=headers)
-
-# optional manuelles Aufräumen
 @app.post("/admin/purge")
 async def admin_purge():
     n = purge_expired(now_iso())
