@@ -118,12 +118,9 @@
       .footer { margin-top: 14px; text-align: center; color: var(--sub); font-size: 12px; }
       a { color: var(--accent); text-decoration: none; }
 
-      /* action row (button left + dropdown right) */
       .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
       @media (max-width: 520px) { .action-row { grid-template-columns: 1fr; } }
       .action-row .btn { margin-top: 0; }
-
-      /* custom dropdown (rounded even when open) */
       .dd { position: relative; width: 100%; }
       .dd-btn {
         width: 100%; border: 1px solid var(--border); background: var(--muted);
@@ -142,7 +139,6 @@
         box-shadow: 0 12px 28px rgba(0,0,0,.45);
         list-style: none; margin: 0; padding: 6px 0;
         display: none; z-index: 20;
-        /* wichtig: KEIN overflow:hidden – sonst kein Scroll */
         max-height: clamp(160px, 40vh, 360px);
         overflow: auto;
         overscroll-behavior: contain;
@@ -156,8 +152,7 @@
       }
       .dd-menu li:hover { background: rgba(255,255,255,0.06); }
       .dd-menu li[aria-selected="true"] { background: rgba(110,231,255,0.12); }
-
-      /* nach oben öffnen, wenn unten zu wenig Platz ist */
+      
       .dd.drop-up .dd-menu {
         top: auto;
         bottom: calc(100% + 8px);
@@ -188,11 +183,9 @@
         <div id="fileInfo" class="file-pill hidden"></div>
       </div>
 
-      <!-- Action row: Upload left + Time dropdown right -->
       <div class="action-row">
         <button id="uploadBtn" class="btn" type="button" disabled>Upload</button>
 
-        <!-- Custom rounded dropdown -->
         <div class="dd" id="expiryDD" data-value="forever">
           <button type="button" class="dd-btn" aria-haspopup="listbox" aria-expanded="false">
             <span id="ddLabel">forever</span>
@@ -225,7 +218,6 @@
       const progress  = document.getElementById('progress');
       const bar       = document.getElementById('bar');
 
-      // Dropdown elements
       const dd        = document.getElementById('expiryDD');
       const ddBtn     = dd.querySelector('.dd-btn');
       const ddMenu    = dd.querySelector('.dd-menu');
@@ -253,7 +245,6 @@
         }
       }
 
-      // Dropzone interactions
       dz.addEventListener('click', () => fi.click());
       dz.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fi.click(); }
@@ -266,15 +257,12 @@
       });
       fi.addEventListener('change', ()=> setFile(fi.files[0] || null));
 
-      // Custom dropdown logic (rounded menu + flip if needed)
       function openDD(){
         dd.classList.add('open');
         ddBtn.setAttribute('aria-expanded','true');
 
-        // Standard: nach unten öffnen
         dd.classList.remove('drop-up');
 
-        // Nach dem Öffnen messen und ggf. nach oben flippen
         requestAnimationFrame(()=>{
           const menuRect = ddMenu.getBoundingClientRect();
           const trigger  = dd.getBoundingClientRect();
@@ -302,12 +290,11 @@
         });
       });
 
-      // Upload
       uploadBtn.addEventListener('click', ()=>{
         if(!chosenFile) return;
         const form = new FormData();
         form.append('file', chosenFile);
-        form.append('expiry', ddHidden.value); // sends 1m/1h/1d/1w/1y/forever
+        form.append('expiry', ddHidden.value);
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/upload');
