@@ -1,7 +1,7 @@
 # filehoster
 Make your file accessible to everyone with just one link
 
-![Dashboard](https://file.techniqstone.net/files/bO4hcapFNYgm)
+![Dashboard](https://file.techniqstone.net/files/UNWOTlfE1VHR)
 
 ### Quickstart install
 ```bash
