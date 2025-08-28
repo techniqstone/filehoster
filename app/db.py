@@ -4,7 +4,6 @@ from typing import Optional
 from datetime import datetime, timezone
 import pathlib
 
-# Die DB liegt standardmäßig im STORAGE_DIR (z. B. /file)
 STORAGE_DIR = os.getenv("STORAGE_DIR", "/file")
 DEFAULT_DB = os.path.join(STORAGE_DIR, "metadata.sqlite3")
 DB_PATH = os.getenv("DB_PATH", DEFAULT_DB)
@@ -33,7 +32,6 @@ def migrate():
     conn = get_conn()
     with conn:
         conn.executescript(SCHEMA)
-        # Falls Tabelle schon existiert, aber Spalte fehlt:
         try:
             conn.execute("SELECT expires_at FROM files LIMIT 1;")
         except sqlite3.OperationalError:
